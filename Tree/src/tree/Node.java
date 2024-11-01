@@ -132,6 +132,23 @@ public class Node<T> {
 
 	}
 
+    public Node<T> successor() {
+		if (this.right != null) {
+			Node<T> cursor = this.right;
+			while (cursor.left != null) {
+				cursor = cursor.left;
+			}
+			return cursor;
+		} else {
+			Node<T> cursor = this;
+			while (cursor.parent != null && cursor == cursor.parent.right) {
+				cursor = cursor.parent;
+			}
+			cursor = cursor.parent;
+			return cursor;
+		}
+    }
+
 
 }
 

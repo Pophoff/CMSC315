@@ -28,10 +28,13 @@ public class Tree<T extends Comparable<T>> {
 		System.out.println("The height of this tree is: " + t.root.getHeight());
 		t.printTree();
 		
-		t.preOrderTraversal();
-		t.inOrderTraversal();
-		t.postOrderTraversal();
-		t.breadthFirstTraversal();
+		for (int i=15; i<42; i++) {
+			Node<Integer> temp = t.getNode(i);
+			if(temp != null) {
+				System.out.println("Removing " + temp.element);
+				t.remove(i);
+			}
+		}
 		
 		System.out.println("Does it have a 14? " + t.contains(14));
 		System.out.println("Does it have a 15? " + t.contains(15));
@@ -126,13 +129,48 @@ public class Tree<T extends Comparable<T>> {
 		
 		if (x.left != null && x.right != null) {
 			// X has two children
-		} else if (x.left != null || x.right != null) {
+			Node<T> s = x.successor();
+			T temp = x.element;
+			x.element = s.element;
+			s.element = temp;
+			x = s;
+		}
+
+		if (x.left != null || x.right != null) {
 			// x has one child
-			
+			if (x.parent == null) {
+				if(x.left != null) {
+					x.left.parent = null;
+					root = x.left;
+				} else {
+					x.right.parent = null;
+					root = x.right;
+				}
+				size--;
+				return true;
+			}
+
+			if (x.left != null) {
+				x.left.parent = x.parent;
+				if(x.parent.left == x) {
+					x.parent.left = x.left;
+				} else {
+					x.parent.right = x.left;
+				}
+			} else {
+				x.right.parent = x.parent;
+				if(x.parent.left == x) {
+					x.parent.left = x.right;
+				} else {
+					x.parent.right = x.right;
+				}
+			}
+			size--;
+			return true;
+
 		} else {
 			// X has no children
-			if (x.parent == null) {
-				// X is only node in tree
+			if(x.parent == null) {
 				root = null;
 				size = 0;
 				return true;
@@ -162,6 +200,7 @@ public class Tree<T extends Comparable<T>> {
 			if (t.right != null)
 				q.offer(t.right);
 		}
+		System.out.println();
 	}
 
 	private void preOrderTraversal() {
